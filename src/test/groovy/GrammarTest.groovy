@@ -1,5 +1,3 @@
-import org.junit.Test
-
 /**
  * Created by tejp on 29/06/15.
  */
@@ -14,7 +12,7 @@ class GrammarTest extends GroovyTestCase {
 
     void testAddGrammar() {
         grammarBuilder.with {
-            var 'S' becomes "AB"
+            start 'S' becomes "AB"
             var 'A' becomes "BB" or "a"
             var 'B' becomes "AB" or "b"
         }
@@ -35,5 +33,15 @@ class GrammarTest extends GroovyTestCase {
 
     void testAddStartVarGrammar() {
 
+    }
+
+    void testCanCreateWord() {
+        grammarBuilder.with {
+            start 'S' becomes "AB"
+            var 'A' becomes "BB" or "a"
+            var 'B' becomes "AB" or "b"
+        }
+        Grammar grammar = grammarBuilder.grammar
+        assert grammar.canGenerateWord("bbaab")
     }
 }
