@@ -1,0 +1,50 @@
+import groovy.transform.ToString
+
+/**
+ * Created by tejp on 29/06/15.
+ */
+class CYKResult {
+
+    CYKElement[][] table
+
+    CYKResult(String str, Grammar grammar) {
+        table = new CYKElement[str.length()][]
+
+        for (int row = 0; row < str.length(); row++) {
+            table[row] = new CYKElement[str.length() - row]
+            for (int col = 0; col < table[row].length ; col++) {
+                table[row][col] = new CYKElement(subWord: str.substring(col, col+row+1 ))
+
+                table[row][col].findWays(row, col, grammar, table)
+            }
+        }
+
+    }
+
+    @ToString
+    static class CYKElement {
+        Set<Rule> rules = new HashSet<>()
+        String subWord
+
+        void findWays(int row, int col, Grammar grammar, CYKElement[][] table) {
+
+            if (row == 0) {
+                rules.addAll(grammar.findRulesFor(subWord))
+            }
+
+            for (int i = 1; i <= subWord.length() - 1 ; i++) {
+
+                CYKElement left  = table[i-1][col]
+                CYKElement right = table[row-i][col+i]
+
+                left.rules.each { leftIT ->
+                    right.rules.each { rightIT ->
+                        String combined = leftIT.name + rightIT.name
+                        rules.addAll(grammar.findRulesFor(combined))
+                    }
+                }
+            }
+
+        }
+    }
+}
