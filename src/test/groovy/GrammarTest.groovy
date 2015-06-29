@@ -12,7 +12,6 @@ class GrammarTest extends GroovyTestCase {
         grammarBuilder = new GrammarDelegate()
     }
 
-    @Test
     void testAddGrammar() {
         grammarBuilder.with {
             var 'S' becomes "AB"
@@ -22,6 +21,19 @@ class GrammarTest extends GroovyTestCase {
 
 
         assert grammarBuilder.grammar.rules.size() == 3
+    }
+
+    void testNoStartVariable() {
+        grammarBuilder.with {
+            var 'S' becomes "a"
+        }
+
+        shouldFail(RuntimeException){
+            grammarBuilder.validate()
+        }
+    }
+
+    void testAddStartVarGrammar() {
 
     }
 }
