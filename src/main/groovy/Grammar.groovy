@@ -57,14 +57,15 @@ class GrammarDelegate {
         }
     }
 
-    static GrammarDelegate load(File file) {
+
+    static GrammarDelegate load(URI uri) {
 
         GrammarDelegate grammarDelegate = new GrammarDelegate()
 
         CompilerConfiguration cc = new CompilerConfiguration()
         cc.setScriptBaseClass(DelegatingScript.class.getName())
         GroovyShell sh = new GroovyShell(cc)
-        DelegatingScript script = (DelegatingScript) sh.parse(file)
+        DelegatingScript script = (DelegatingScript) sh.parse(uri)
         script.setDelegate(grammarDelegate)
         script.run()
 

@@ -10,12 +10,12 @@ import java.util.stream.Collectors
 
 
 //CYKResult table = g.getGrammar().getCYKResult("bbaab")
-CYKResult table = g.getGrammar().getCYKResult("aabba")
+//CYKResult table = g.getGrammar().getCYKResult("aabba")
 
 
-table.table.each {
-    it.each {
-        print "$it\t"
-    }
-    println()
-}
+
+
+GrammarDelegate grammarDelegate = GrammarDelegate.load(getClass().classLoader.getResource("MyGrammar.groovy").toURI())
+CYKResult result = grammarDelegate.grammar.getCYKResult("bbaab")
+
+println result
