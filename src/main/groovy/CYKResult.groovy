@@ -21,6 +21,19 @@ class CYKResult {
 
     }
 
+    @Override
+    String toString() {
+        StringBuilder stringBuilder = new StringBuilder()
+        table.each {
+            it.each {
+                stringBuilder.append("$it\t")
+            }
+            stringBuilder.append("\n")
+        }
+        stringBuilder.toString()
+    }
+
+
     @ToString
     static class CYKElement {
         Set<Rule> rules = new HashSet<>()
