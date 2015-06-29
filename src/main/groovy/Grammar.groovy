@@ -17,6 +17,11 @@ class Grammar {
 
     }
 
+   boolean canGenerateWord(String word) {
+       CYKResult result = getCYKResult(word)
+       result.topRules().stream().anyMatch({it.start})
+   }
+
     CYKResult getCYKResult(String str) {
         new CYKResult(str, this)
     }

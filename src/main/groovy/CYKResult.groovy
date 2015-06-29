@@ -21,6 +21,10 @@ class CYKResult {
 
     }
 
+    Set<Rule> topRules() {
+        table[table.length-1][0].rules
+    }
+
     @Override
     String toString() {
         StringBuilder stringBuilder = new StringBuilder()
