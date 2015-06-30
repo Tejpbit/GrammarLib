@@ -19,7 +19,7 @@ class RuleBuilder {
     }
 
     RuleBuilder or(String s) {
-        rule.values << s
+        becomes(s)
         this
     }
 }
