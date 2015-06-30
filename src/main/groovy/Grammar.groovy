@@ -14,6 +14,21 @@ class Grammar {
     }
 
     void toChomskyNormalForm() {
+        /**
+         * hitta alla terminalar,
+         * se till så att alla terminalar har en variabel som går direkt till dem.
+         * sök igenom efter otillåtna variabler
+         * ersätt med nya variabler.
+         *
+         * måste fråga grammatiken efter en ny variable som jag kan använda
+         */
+    }
+
+    /**
+     *
+     * @return a Rule with a unused name and no connections yet made
+     */
+    Rule newVariable() {
 
     }
 

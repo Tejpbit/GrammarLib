@@ -21,6 +21,10 @@ class CYKResult {
 
     }
 
+    /**
+     *
+     * @return the set rules which has a start variable which can generate the given word.
+     */
     Set<Rule> topRules() {
         table[table.length-1][0].rules
     }
