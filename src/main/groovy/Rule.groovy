@@ -6,7 +6,7 @@ import groovy.transform.ToString
 @ToString
 class Rule {
     String name
-    Set<String> values = new HashSet<>()
+    Set<RuleTarget> values = new HashSet<>()
     boolean start
 }
 
@@ -14,7 +14,7 @@ class RuleBuilder {
     Rule rule
 
     RuleBuilder becomes(String s) {
-        rule.values << s
+        rule.values << new RuleTarget(value: s)
         this
     }
 
@@ -22,4 +22,9 @@ class RuleBuilder {
         becomes(s)
         this
     }
+}
+
+@ToString
+class RuleTarget {
+    String value
 }

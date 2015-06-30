@@ -1,27 +1,75 @@
 import groovy.transform.ToString
 import org.codehaus.groovy.control.CompilerConfiguration
 
+import java.util.regex.Pattern
 import java.util.stream.Collectors
 
 /**
  * Created by tejp on 29/06/15.
  */
 class Grammar {
-    List<Rule> rules = new ArrayList<>()
+    Set<Rule> rules = new HashSet<>()
 
     void addRule(Rule rule) {
         rules << rule
     }
 
     void toChomskyNormalForm() {
-        /**
-         * hitta alla terminalar,
-         * se till så att alla terminalar har en variabel som går direkt till dem.
-         * sök igenom efter otillåtna variabler
-         * ersätt med nya variabler.
-         *
-         * måste fråga grammatiken efter en ny variable som jag kan använda
-         */
+        List<String> terminals = new ArrayList<>()
+        rules.each { rule ->
+            rule.values.each { replacement ->
+                replacement.value.each { target ->
+                    if (target.matches("[a-z]")) {
+                        terminals.add(target)
+                    }
+                }
+            }
+        }
+
+        terminals.each { terminal ->
+            if (rules.stream().noneMatch({ it.values.value.contains(terminal) && it.values.size() == 1 })) {
+                Rule newRule = newVariable()
+                newRule.values << new RuleTarget(value: terminal)
+                rules << newRule
+            }
+        }
+
+        rules.each { rule ->
+            rule.values.each {
+                if (Pattern.compile("[a-z]").matcher(it.value).find() && it.value.length() > 1) {
+                    StringBuilder strBuilder = new StringBuilder()
+                    for (int i = 0; i < it.value.length(); i++) {
+                        char ch = it.value.charAt(i)
+                        if (ch.isLowerCase()) {
+                            strBuilder.append(
+                                rules.stream()
+                                        .filter({ it.values.value.contains(String.valueOf(ch)) && it.values.size() == 1})
+                                        .findAny()
+                                        .orElseThrow({new NoSuchElementException("Missing terminal " + ch + "\n" + this)})
+                                        .name
+                            )
+                        } else {
+                            strBuilder.append(ch)
+                        }
+                    }
+                    it.value = strBuilder.toString()
+                }
+            }
+        }
+
+        new HashSet<Rule>(rules).each {rule ->
+            rule.values.each {ruleTarget ->
+                while (ruleTarget.value.length() > 2) {
+                    Rule newRule = newVariable()
+                    newRule.values << new RuleTarget(value: ruleTarget.value.substring(0, 2))
+                    rules << newRule
+
+                    ruleTarget.value = newRule.name + ruleTarget.value.substring(2)
+                }
+            }
+        }
+
+
     }
 
     /**
@@ -29,7 +77,20 @@ class Grammar {
      * @return a Rule with a unused name and no connections yet made
      */
     Rule newVariable() {
+        char ruleName = 'A'
 
+        rules.stream().sorted(new Comparator<Rule>() {
+            @Override
+            int compare(Rule o1, Rule o2) {
+                return o1.name.compareTo(o2.name)
+            }
+        }).each {
+            if (it.name.equals(ruleName.toString())) {
+                ruleName+=1
+            }
+        }
+
+        new Rule(name: ruleName)
     }
 
    boolean canGenerateWord(String word) {
@@ -48,8 +109,16 @@ class Grammar {
      */
     Set<Rule> findRulesFor(String ruleResult) {
         rules.stream()
-                .filter({it.values.contains(ruleResult)})
+                .filter({it.values.value.contains(ruleResult)})
                 .collect(Collectors.toSet())
+    }
+
+
+    @Override
+    public String toString() {
+        return "Grammar{" +
+                "rules=" + rules.stream().map({it.toString()}).collect(Collectors.joining("\n")) +
+                '}';
     }
 }
 
