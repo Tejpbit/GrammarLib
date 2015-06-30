@@ -41,6 +41,11 @@ class Grammar {
         new CYKResult(str, this)
     }
 
+    /**
+     *
+     * @param ruleResult: what you want the rules to be able to result in
+     * @return all rules which result in the String ruleResult
+     */
     Set<Rule> findRulesFor(String ruleResult) {
         rules.stream()
                 .filter({it.values.contains(ruleResult)})
