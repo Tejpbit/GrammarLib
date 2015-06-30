@@ -31,10 +31,6 @@ class GrammarTest extends GroovyTestCase {
         }
     }
 
-    void testAddStartVarGrammar() {
-
-    }
-
     void testCanCreateWord() {
         grammarBuilder.with {
             start 'S' becomes "AB"
